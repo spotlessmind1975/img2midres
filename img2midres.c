@@ -401,8 +401,8 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf("                    PNM (PPM / PGM binary)\n");
     printf(" -o <filename> output filename\n");
     printf(" -O <filename> additional output filename\n");
-    printf(" -A <filename> add image to a slide show file\n");
     printf("                  mandatory only if not compressed (-u)\n");
+    printf(" -A <filename> add image to a slide show file\n");
     printf("\n");
     printf("[optional]\n");
     printf("\n");
@@ -417,7 +417,7 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf("                  alias for: \"-p 2\"\n");
     printf(" -B <level>    brightness correction\n");
     printf(" -c            use compressed format (mixels/color in the same file)\n");
-    printf(" -h <height>   height of generated image [in mixels]\n");
+    printf(" -h <height>   height of generated image [in characters]\n");
     printf(" -l <lum>      threshold luminance\n");
     printf(" -p <size>     size of palette (2, 8 or 16 colors)\n");
     printf(" -q            quiet execution (suppress output)\n");
@@ -426,7 +426,7 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf(" -S <index>    start from <index> palette entry\n");
     printf(" -u            use uncompressed format (mixels/color in separate files)\n");
     printf(" -v            make execution verbose (leave output)\n");
-    printf(" -w <width>    width of generated image [in mixels]\n");
+    printf(" -w <width>    width of generated image [in characters]\n");
     printf(" ");
 
     exit(_level);
