@@ -597,9 +597,9 @@ int main(int _argc, char *_argv[]) {
 
     if (verbose) {
         printf(" %s: (%dx%d, %d bpp)\n", filename_in, image_width, image_height, image_depth);
+        printf(" luminance: %d\n\n", configuration.minimum_luminance_level);
     }
 
-    printf(" luminance: %d\n\n", configuration.minimum_luminance_level);
     Output result;
     generate_midres_output(&configuration, source, image_width, image_height, image_depth, &result);
     stbi_image_free(source);
