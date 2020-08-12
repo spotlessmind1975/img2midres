@@ -42,18 +42,22 @@ This option allows you to indicate any slideshow file to be updated. If the file
 ## OPTIONS
 
 `-64`           use output format for Commodore 64
+
 This option is a shortcut for the following options: 
 `-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 0`
 
 `-20`           use output format for Commodore VIC 20
+
 This option is a shortcut for the following options: 
 `-w 22 -h 23 -l 32 -c -p 8 -S 0 -s 1 -r 0 -B 0`
 
 `-16`           use output format for Commodore 16
+
 This option is a shortcut for the following options: 
 `-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96`
 
 `-b`            image is just black/white
+
 This option is a shortcut for `-p 2`
 
 `-B <level>`    brightness correction
