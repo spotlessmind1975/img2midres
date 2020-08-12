@@ -106,6 +106,12 @@ char* filename_out_col = NULL;
 
 char* filename_slideshow = NULL;
 
+// Starting address for mixels
+int starting_address_mixels = 0;
+
+// Starting address for colors
+int starting_address_colors = 0;
+
 // Verbose?
 
 int verbose = 0;
@@ -382,6 +388,9 @@ void generate_midres_output(Configuration* _configuration,
 
 void usage_and_exit(int _level, int _argc, char* _argv[]) {
 
+    printf("img2midres - Utility to convert images into midres pictures\n");
+    printf("Copyright(c) 2020 by Marco Spedaletti.\n");
+    printf("Licensed under CC-BY-NC-SA\n\n");
     printf("Usage: %s [options]", _argv[0]);
     printf("\n");
     printf("options:\n");
@@ -458,6 +467,8 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.palette_size = 16;
                     configuration.palette_skip = 0;
                     configuration.brightness_correction = 0;
+                    starting_address_mixels = 0x0400;
+                    starting_address_colors = 0xd800;
                     break;
                 case '2': // "-20"
                     configuration.screen_width = 22;
@@ -468,6 +479,8 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.palette_size = 8;
                     configuration.palette_skip = 1;
                     configuration.brightness_correction = 0;
+                    starting_address_mixels = 0x1e00;
+                    starting_address_colors = 0x9600;
                     break;
                 case '1': // "-16"
                     configuration.screen_width = 40;
@@ -478,6 +491,8 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.palette_size = 16;
                     configuration.palette_skip = 0;
                     configuration.brightness_correction = 96;
+                    starting_address_mixels = 0x0C00;
+                    starting_address_colors = 0x0800;
                     break;
                 case 'w':  // "-w <width>"
                     configuration.screen_width = atoi(_argv[i + 1]);
@@ -619,9 +634,7 @@ int main(int _argc, char *_argv[]) {
         usage_and_exit(ERL_CANNOT_OPEN_OUTPUT, _argc, _argv);
     }
 
-    unsigned char starting_address[2] = { 0, 0 };
-
-    fwrite(starting_address, 2, 1, handle);
+    fwrite(&starting_address_mixels, 2, 1, handle);
     fwrite(result.mixels, result.surface_in_mixels, 1, handle);
     fclose(handle);
 
@@ -631,7 +644,7 @@ int main(int _argc, char *_argv[]) {
             printf("Unable to open file %s\n", filename_out_pic);
             usage_and_exit(ERL_CANNOT_OPEN_OUTPUT2, _argc, _argv);
         }
-        fwrite(starting_address, 2, 1, handle);
+        fwrite(&starting_address_colors, 2, 1, handle);
         fwrite(result.colors, result.surface_in_mixels, 1, handle);
         fclose(handle);
     }
