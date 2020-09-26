@@ -32,7 +32,7 @@ With this option you can indicate the name of the file where the image converted
 
 `-O <filename>` additional output filename
 
-With this option you can indicate the name of the additional file where the color map of midres converted image will be written. This option is required only if you choose not to compress the midres picture. By convention, the following extension should be used:
+With this option you can indicate the name of the additional file where the color map of midres converted image will be written. This option is required only if you choose not to compress the midres picture and you choose a platform that allow to use colors (like Commodore). By convention, the following extension should be used:
  * .col - for uncompressed images (option `-u`).
 
 `-A <filename>` add image to a slide show file
@@ -95,7 +95,7 @@ This option allows you to indicate which color of the palette should be used ins
 
 `-r <platform>` use midres tiles for specific platform
 
-This option allows you to specify which set of tiles will be used to implement the MIDRES graphics. You can choose `cbm` to indicate the standard tiles of the PETSCII character set or `atari` to indicate the set loaded on departure from the library.
+This option allows you to specify which set of tiles will be used to implement the MIDRES graphics. You can choose `cbm` to indicate the standard (built-in) tiles of the PETSCII character set or `atari` to indicate the set **[ztiles.bin](https://github.com/spotlessmind1975/midres/blob/master/data/ztiles.bin)** loaded on departure from the library for this platform (8 tiles). Finally, you can choose `vanilla` in order to choose the complete 16 tiles, stored in **[mtiles.bin](https://github.com/spotlessmind1975/midres/blob/master/data/ztiles.bin)**.
 
 `-s <index>`    skip first palette entries
 

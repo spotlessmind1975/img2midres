@@ -436,8 +436,9 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf(" -q            quiet execution (suppress output)\n");
     printf(" -r <index>    replace black (0) with <index> color\n");
     printf(" -R <platform> use midres tiles for specific platform:\n");
-    printf("                 cbm: Commodore platforms\n");
-    printf("                 atari: Atari platforms\n");
+    printf("                 cbm: Commodore platforms (built-in)\n");
+    printf("                 atari: Atari platforms (8 custom tiles)\n");
+    printf("                 vanilla: generic platform (16 custom tiles)\n");
     printf(" -s <index>    skip first <index> palette entries\n");
     printf(" -S <index>    start from <index> palette entry\n");
     printf(" -u            use uncompressed format (mixels/color in separate files)\n");
@@ -585,6 +586,8 @@ void parse_options(int _argc, char* _argv[]) {
                         memcpy(RENDERED_MIXELS, RENDERED_MIXELS_ATARI, 16);
                     } else if (strcmp(_argv[i + 1], "cbm")) {
                         memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                    } else if (strcmp(_argv[i + 1], "vanilla")) {
+                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_VANILLA, 16);
                     } else {
                         printf("Unknown platform for -R: %s", _argv[i+1]);
                         usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);

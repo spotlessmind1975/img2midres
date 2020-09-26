@@ -74,5 +74,6 @@
 
     extern unsigned char RENDERED_MIXELS_ATARI[16];
     extern unsigned char RENDERED_MIXELS_CBM[16];
+    extern unsigned char RENDERED_MIXELS_VANILLA[16];
 
 #endif
