@@ -116,7 +116,7 @@ int starting_address_colors = 0;
 int verbose = 0;
 
 // MIDRES pattern to use
-unsigned char* RENDERED_MIXELS = NULL;
+unsigned char RENDERED_MIXELS[16];
 
 /****************************************************************************
  ** RESIDENT FUNCTIONS SECTION
@@ -476,8 +476,8 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x0400;
                     starting_address_colors = 0xd800;
-                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
-                        break;
+                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                    break;
                 case '2': // "-20"
                     configuration.screen_width = 22;
                     configuration.screen_height = 23;
@@ -489,7 +489,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x1e00;
                     starting_address_colors = 0x9600;
-                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
                     break;
                 case '1': // "-16"
                     configuration.screen_width = 40;
@@ -502,7 +502,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 96;
                     starting_address_mixels = 0x0C00;
                     starting_address_colors = 0x0800;
-                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
                     break;
                 case 'a': // "-a"
                     configuration.screen_width = 40;
@@ -515,7 +515,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 96;
                     starting_address_mixels = 0x0;
                     starting_address_colors = 0x0;
-                    RENDERED_MIXELS = RENDERED_MIXELS_ATARI;
+                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_ATARI, 16);
                     break;
                 case 'w':  // "-w <width>"
                     configuration.screen_width = atoi(_argv[i + 1]);
@@ -582,9 +582,9 @@ void parse_options(int _argc, char* _argv[]) {
                     break;
                 case 'R': // "-R <platform>"
                     if (strcmp(_argv[i + 1], "atari")) {
-                        RENDERED_MIXELS = RENDERED_MIXELS_ATARI;
+                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_ATARI, 16);
                     } else if (strcmp(_argv[i + 1], "cbm")) {
-                        RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
                     } else {
                         printf("Unknown platform for -R: %s", _argv[i+1]);
                         usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);
@@ -605,7 +605,7 @@ void parse_options(int _argc, char* _argv[]) {
 
 int main(int _argc, char *_argv[]) {
 
-    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
 
     parse_options(_argc, _argv);
 
