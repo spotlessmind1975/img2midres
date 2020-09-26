@@ -44,17 +44,22 @@ This option allows you to indicate any slideshow file to be updated. If the file
 `-64`           use output format for Commodore 64
 
 This option is a shortcut for the following options: 
-`-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 0`
+`-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 0 -R cbm`
 
 `-20`           use output format for Commodore VIC 20
 
 This option is a shortcut for the following options: 
-`-w 22 -h 23 -l 32 -c -p 8 -S 0 -s 1 -r 0 -B 0`
+`-w 22 -h 23 -l 32 -c -p 8 -S 0 -s 1 -r 0 -B 0 -R cbm`
 
-`-16`           use output format for Commodore 16
+`-16`           use output format for Commodore 16-PLUS/4
 
 This option is a shortcut for the following options: 
-`-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96`
+`-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96 -R cbm`
+
+`-a`            use output format for Atari 800 (luminance only)
+
+This option is a shortcut for the following options: 
+`-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R atari`
 
 `-b`            image is just black/white
 
@@ -76,7 +81,7 @@ It is possible to indicate the height of the image to be generated, in terms of 
 
 It is possible to indicate the luminance threshold, above which the mixel is considered and below which the mixel is ignored. This parameter is important to ensure image quality in presence of many shades. A value of zero implies that all mixels will be drawn and the image will depend solely on the color component. Conversely, too high a value of this parameter will result in a completely black image.
 
- `-p <size>`     size of palette
+`-p <size>`     size of palette
 
  This parameter allows to size the number of colors used for the adaptive palette. In general, this parameter should be identical to the palette size for the hardware under consideration (8 colors for the VIC 20, 16 colors for the other platforms). However, it is possible to indicate a narrower range, where certain effects are desired.
 
@@ -87,6 +92,10 @@ This option disables any type of output, making the program suitable for running
 `-r <index>`    replace black (0) with another color
 
 This option allows you to indicate which color of the palette should be used instead of black (0). This option can be useful in those cases where the image is particularly low in contrast.
+
+`-r <platform>` use midres tiles for specific platform
+
+This option allows you to specify which set of tiles will be used to implement the MIDRES graphics. You can choose `cbm` to indicate the standard tiles of the PETSCII character set or `atari` to indicate the set loaded on departure from the library.
 
 `-s <index>`    skip first palette entries
 
