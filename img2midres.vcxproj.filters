@@ -24,6 +24,12 @@
     <ClCompile Include="..\midres\src\midres_drawing.c">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="..\midres\src\midres_atari.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\midres\src\midres_cbm.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="img2midres.h">

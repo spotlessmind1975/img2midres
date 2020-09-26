@@ -113,8 +113,10 @@ int starting_address_mixels = 0;
 int starting_address_colors = 0;
 
 // Verbose?
-
 int verbose = 0;
+
+// MIDRES pattern to use
+unsigned char* RENDERED_MIXELS = NULL;
 
 /****************************************************************************
  ** RESIDENT FUNCTIONS SECTION
@@ -416,11 +418,13 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf("[optional]\n");
     printf("\n");
     printf(" -64           use output format for Commodore 64\n");
-    printf("                  alias for: \"-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 0\"\n");
+    printf("                  alias for: \"-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 0 -R cbm\"\n");
     printf(" -20           use output format for Commodore VIC 20\n");
-    printf("                  alias for: \"-w 22 -h 23 -l 32 -c -p 8 -S 0 -s 1 -r 0 -B 0\"\n");
+    printf("                  alias for: \"-w 22 -h 23 -l 32 -c -p 8 -S 0 -s 1 -r 0 -B 0 -R cbm\"\n");
     printf(" -16           use output format for Commodore 16\n");
-    printf("                  alias for: \"-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96\"\n");
+    printf("                  alias for: \"-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96 -R cbm\"\n");
+    printf(" -a            use output format for Atari 800\n");
+    printf("                  alias for: \"-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R atari\"\n");
     printf(" \n");
     printf(" -b            image is just black/white\n");
     printf("                  alias for: \"-p 2\"\n");
@@ -431,6 +435,9 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf(" -p <size>     size of palette (2, 8 or 16 colors)\n");
     printf(" -q            quiet execution (suppress output)\n");
     printf(" -r <index>    replace black (0) with <index> color\n");
+    printf(" -R <platform> use midres tiles for specific platform:\n");
+    printf("                 cbm: Commodore platforms\n");
+    printf("                 atari: Atari platforms\n");
     printf(" -s <index>    skip first <index> palette entries\n");
     printf(" -S <index>    start from <index> palette entry\n");
     printf(" -u            use uncompressed format (mixels/color in separate files)\n");
@@ -469,7 +476,8 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x0400;
                     starting_address_colors = 0xd800;
-                    break;
+                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                        break;
                 case '2': // "-20"
                     configuration.screen_width = 22;
                     configuration.screen_height = 23;
@@ -481,6 +489,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x1e00;
                     starting_address_colors = 0x9600;
+                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
                     break;
                 case '1': // "-16"
                     configuration.screen_width = 40;
@@ -493,6 +502,20 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 96;
                     starting_address_mixels = 0x0C00;
                     starting_address_colors = 0x0800;
+                    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                    break;
+                case 'a': // "-a"
+                    configuration.screen_width = 40;
+                    configuration.screen_height = 24;
+                    configuration.minimum_luminance_level = 32;
+                    configuration.compressed = 0;
+                    configuration.palette_start = 0;
+                    configuration.palette_size = 2;
+                    configuration.palette_skip = 0;
+                    configuration.brightness_correction = 96;
+                    starting_address_mixels = 0x0;
+                    starting_address_colors = 0x0;
+                    RENDERED_MIXELS = RENDERED_MIXELS_ATARI;
                     break;
                 case 'w':  // "-w <width>"
                     configuration.screen_width = atoi(_argv[i + 1]);
@@ -557,6 +580,17 @@ void parse_options(int _argc, char* _argv[]) {
                 case 'b': // "-b"
                     configuration.palette_size = 2;
                     break;
+                case 'R': // "-R <platform>"
+                    if (strcmp(_argv[i + 1], "atari")) {
+                        RENDERED_MIXELS = RENDERED_MIXELS_ATARI;
+                    } else if (strcmp(_argv[i + 1], "cbm")) {
+                        RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+                    } else {
+                        printf("Unknown platform for -R: %s", _argv[i+1]);
+                        usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);
+                    }
+                    ++i;
+                    break;
                 default:
                     printf("Unknown option: %s", _argv[i]);
                     usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);
@@ -571,6 +605,8 @@ void parse_options(int _argc, char* _argv[]) {
 
 int main(int _argc, char *_argv[]) {
 
+    RENDERED_MIXELS = RENDERED_MIXELS_CBM;
+
     parse_options(_argc, _argv);
 
     if (filename_in == NULL) {
@@ -583,7 +619,7 @@ int main(int _argc, char *_argv[]) {
         usage_and_exit(ERL_MISSING_OUTPUT_FILENAME, _argc, _argv);
     }
 
-    if (!configuration.compressed&&filename_out_col == NULL) {
+    if (!configuration.compressed&&filename_out_col == NULL&&starting_address_colors>0) {
         printf("Missing output filename for color.\n");
         usage_and_exit(ERL_MISSING_OUTPUT_FILENAME2, _argc, _argv);
         exit(1);
@@ -595,7 +631,9 @@ int main(int _argc, char *_argv[]) {
             printf("Output image ................ %s\n", filename_out_pic);
         } else {
             printf("Output mixels ............... %s\n", filename_out_pic);
-            printf("Output color ................ %s\n", filename_out_col);
+            if (starting_address_colors > 0) {
+                printf("Output color ................ %s\n", filename_out_col);
+            }
         }
         if (filename_slideshow != NULL) {
             printf("Add to slideshow ............ %s\n", filename_slideshow);
@@ -634,11 +672,13 @@ int main(int _argc, char *_argv[]) {
         usage_and_exit(ERL_CANNOT_OPEN_OUTPUT, _argc, _argv);
     }
 
-    fwrite(&starting_address_mixels, 2, 1, handle);
+    if (starting_address_mixels > 0) {
+        fwrite(&starting_address_mixels, 2, 1, handle);
+    }
     fwrite(result.mixels, result.surface_in_mixels, 1, handle);
     fclose(handle);
 
-    if (!configuration.compressed) {
+    if (!configuration.compressed&&starting_address_colors>0) {
         handle = fopen(filename_out_col, "wb");
         if (handle == NULL) {
             printf("Unable to open file %s\n", filename_out_pic);
@@ -664,9 +704,11 @@ int main(int _argc, char *_argv[]) {
             unsigned char command = 1; // read picture
             fwrite(&command, 1, 1, slideshow);
             fwrite_pad(basename(filename_out_pic), 16, slideshow);
-            command = 2; // read color
-            fwrite(&command, 1, 1, slideshow);
-            fwrite_pad(basename(filename_out_col), 16, slideshow);
+            if (starting_address_colors > 0) {
+                command = 2; // read color
+                fwrite(&command, 1, 1, slideshow);
+                fwrite_pad(basename(filename_out_col), 16, slideshow);
+            }
         }
         fclose(slideshow);
     }
