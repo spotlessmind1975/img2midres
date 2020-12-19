@@ -142,10 +142,10 @@ int verbose = 0;
 // MIDRES pattern to use
 unsigned char MR_RENDERED_MIXELS[16];
 
-unsigned char MR_RENDERED_MIXELS_ATARI[16];
-unsigned char MR_RENDERED_MIXELS_CBM[16];
-unsigned char MR_RENDERED_MIXELS_VANILLA[16];
-unsigned char MR_RENDERED_MIXELS_VDP[16];
+extern unsigned char MR_RENDERED_MIXELS_ATARI[16];
+extern unsigned char MR_RENDERED_MIXELS_CBM[16];
+extern unsigned char MR_RENDERED_MIXELS_VANILLA[16];
+extern unsigned char MR_RENDERED_MIXELS_VDP[16];
 
 /****************************************************************************
  ** RESIDENT FUNCTIONS SECTION
@@ -327,7 +327,7 @@ void generate_midres_output(Configuration* _configuration,
     // We move by moving along the pixels of the output image.
     for (i = 0; i < configuration.screen_height * 2; ++i) {
         if (verbose) {
-            printf("%d: ", i);
+            printf("%-02.2d: ", i);
         }
         for (j = 0; j < configuration.screen_width * 2; ++j) {
 
