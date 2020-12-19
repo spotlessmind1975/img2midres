@@ -420,7 +420,7 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
 
     printf("img2midres - Utility to convert images into midres pictures\n");
     printf("Copyright(c) 2020 by Marco Spedaletti.\n");
-    printf("Licensed under CC-BY-NC-SA\n\n");
+    printf("Licensed under Apache 2.0 License\n\n");
     printf("Usage: %s [options]", _argv[0]);
     printf("\n");
     printf("options:\n");
