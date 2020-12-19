@@ -44,5 +44,11 @@
     <ClInclude Include="..\midres\src\midres.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="..\midres\src\midres_hw_vanilla.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="..\midres\src\midres_hw.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

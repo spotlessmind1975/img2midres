@@ -1,7 +1,31 @@
-/****************************************************************************
- * img2midres - Utility to convert images into midres pictures              *
- *                                                                          *
- * Copyright (c) 2020 by Marco Spedaletti. Licensed under CC-BY-NC-SA       *
+/*****************************************************************************
+ * IMG2MIDRES - Utility to convert images into midres pictures               *
+ *****************************************************************************
+ * Copyright 2020 Marco Spedaletti (asimov@mclink.it)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *----------------------------------------------------------------------------
+ * Concesso in licenza secondo i termini della Licenza Apache, versione 2.0
+ * (la "Licenza"); è proibito usare questo file se non in conformità alla
+ * Licenza. Una copia della Licenza è disponibile all'indirizzo:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Se non richiesto dalla legislazione vigente o concordato per iscritto,
+ * il software distribuito nei termini della Licenza è distribuito
+ * "COSÌ COM'È", SENZA GARANZIE O CONDIZIONI DI ALCUN TIPO, esplicite o
+ * implicite. Consultare la Licenza per il testo specifico che regola le
+ * autorizzazioni e le limitazioni previste dalla medesima.
  ****************************************************************************/
 
 // This directive is used to deactivate the safety warning for the use 
@@ -116,7 +140,11 @@ int starting_address_colors = 0;
 int verbose = 0;
 
 // MIDRES pattern to use
-unsigned char RENDERED_MIXELS[16];
+unsigned char MR_RENDERED_MIXELS[16];
+
+unsigned char MR_RENDERED_MIXELS_ATARI[16];
+unsigned char MR_RENDERED_MIXELS_CBM[16];
+unsigned char MR_RENDERED_MIXELS_VANILLA[16];
 
 /****************************************************************************
  ** RESIDENT FUNCTIONS SECTION
@@ -266,9 +294,9 @@ void generate_midres_output(Configuration* _configuration,
     int i0, j0;
 
     // Set brightness, screen width and height for midres library.
-    WIDTH = _configuration->screen_width;
-    HEIGHT = _configuration->screen_height;
-    BRIGHTNESS = _configuration->brightness_correction;
+    MR_WIDTH = _configuration->screen_width;
+    MR_HEIGHT = _configuration->screen_height;
+    MR_BRIGHTNESS = _configuration->brightness_correction;
 
     // The number of mixels needed is equal to the product of the width 
     // and height.
@@ -287,7 +315,7 @@ void generate_midres_output(Configuration* _configuration,
 
     // Initialize spaces.
     for (i = 0; i < surface_in_mixel; ++i) {
-        _output->mixels[i] = RENDERED_MIXELS[0]; // empty mixel
+        _output->mixels[i] = MR_RENDERED_MIXELS[0]; // empty mixel
         _output->colors[i] = MR_COLOR_BLACK; // BLACK
     }
 
@@ -477,7 +505,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x0400;
                     starting_address_colors = 0xd800;
-                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
                     break;
                 case '2': // "-20"
                     configuration.screen_width = 22;
@@ -490,7 +518,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 0;
                     starting_address_mixels = 0x1e00;
                     starting_address_colors = 0x9600;
-                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
                     break;
                 case '1': // "-16"
                     configuration.screen_width = 40;
@@ -503,7 +531,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 96;
                     starting_address_mixels = 0x0C00;
                     starting_address_colors = 0x0800;
-                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
                     break;
                 case 'a': // "-a"
                     configuration.screen_width = 40;
@@ -516,7 +544,7 @@ void parse_options(int _argc, char* _argv[]) {
                     configuration.brightness_correction = 96;
                     starting_address_mixels = 0x0;
                     starting_address_colors = 0x0;
-                    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_ATARI, 16);
+                    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_ATARI, 16);
                     break;
                 case 'w':  // "-w <width>"
                     configuration.screen_width = atoi(_argv[i + 1]);
@@ -583,11 +611,11 @@ void parse_options(int _argc, char* _argv[]) {
                     break;
                 case 'R': // "-R <platform>"
                     if (strcmp(_argv[i + 1], "atari")) {
-                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_ATARI, 16);
+                        memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_ATARI, 16);
                     } else if (strcmp(_argv[i + 1], "cbm")) {
-                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+                        memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
                     } else if (strcmp(_argv[i + 1], "vanilla")) {
-                        memcpy(RENDERED_MIXELS, RENDERED_MIXELS_VANILLA, 16);
+                        memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_VANILLA, 16);
                     } else {
                         printf("Unknown platform for -R: %s", _argv[i+1]);
                         usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);
@@ -608,7 +636,7 @@ void parse_options(int _argc, char* _argv[]) {
 
 int main(int _argc, char *_argv[]) {
 
-    memcpy(RENDERED_MIXELS, RENDERED_MIXELS_CBM, 16);
+    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
 
     parse_options(_argc, _argv);
 
