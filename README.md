@@ -61,6 +61,11 @@ This option is a shortcut for the following options:
 This option is a shortcut for the following options: 
 `-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R atari`
 
+`-x`            use output format for VDP chipset (luminance only)
+
+This option is a shortcut for the following options: 
+`-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R vdp`
+
 `-b`            image is just black/white
 
 This option is a shortcut for `-p 2`

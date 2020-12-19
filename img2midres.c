@@ -145,6 +145,7 @@ unsigned char MR_RENDERED_MIXELS[16];
 unsigned char MR_RENDERED_MIXELS_ATARI[16];
 unsigned char MR_RENDERED_MIXELS_CBM[16];
 unsigned char MR_RENDERED_MIXELS_VANILLA[16];
+unsigned char MR_RENDERED_MIXELS_VDP[16];
 
 /****************************************************************************
  ** RESIDENT FUNCTIONS SECTION
@@ -453,6 +454,8 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf("                  alias for: \"-w 40 -h 25 -l 32 -c -p 16 -S 0 -s 0 -r 0 -B 96 -R cbm\"\n");
     printf(" -a            use output format for Atari 800\n");
     printf("                  alias for: \"-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R atari\"\n");
+    printf(" -x            use output format for VDP (MSX, Spectravideo, Colecovision and more)\n");
+    printf("                  alias for: \"-w 40 -h 24 -l 32 -u -p 2 -S 0 -s 0 -r 0 -B 0 -R vdp\"\n");
     printf(" \n");
     printf(" -b            image is just black/white\n");
     printf("                  alias for: \"-p 2\"\n");
@@ -467,6 +470,7 @@ void usage_and_exit(int _level, int _argc, char* _argv[]) {
     printf("                 cbm: Commodore platforms (built-in)\n");
     printf("                 atari: Atari platforms (8 custom tiles)\n");
     printf("                 vanilla: generic platform (16 custom tiles)\n");
+    printf("                 vdp: VDP chipset platform (16 custom tiles)\n");
     printf(" -s <index>    skip first <index> palette entries\n");
     printf(" -S <index>    start from <index> palette entry\n");
     printf(" -u            use uncompressed format (mixels/color in separate files)\n");
@@ -546,6 +550,19 @@ void parse_options(int _argc, char* _argv[]) {
                     starting_address_colors = 0x0;
                     memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_ATARI, 16);
                     break;
+                case 'x': // "-x"
+                    configuration.screen_width = 32;
+                    configuration.screen_height = 24;
+                    configuration.minimum_luminance_level = 32;
+                    configuration.compressed = 0;
+                    configuration.palette_start = 0;
+                    configuration.palette_size = 2;
+                    configuration.palette_skip = 0;
+                    configuration.brightness_correction = 96;
+                    starting_address_mixels = 0x0;
+                    starting_address_colors = 0x0;
+                    memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_VDP, 16);
+                    break;
                 case 'w':  // "-w <width>"
                     configuration.screen_width = atoi(_argv[i + 1]);
                     ++i;
@@ -616,6 +633,8 @@ void parse_options(int _argc, char* _argv[]) {
                         memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_CBM, 16);
                     } else if (strcmp(_argv[i + 1], "vanilla")) {
                         memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_VANILLA, 16);
+                    } else if (strcmp(_argv[i + 1], "vdp")) {
+                        memcpy(MR_RENDERED_MIXELS, MR_RENDERED_MIXELS_VDP, 16);
                     } else {
                         printf("Unknown platform for -R: %s", _argv[i+1]);
                         usage_and_exit(ERL_WRONG_OPTIONS, _argc, _argv);
